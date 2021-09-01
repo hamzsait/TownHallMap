@@ -1,0 +1,20 @@
+.displayBorder{
+    border: 1px solid black;
+}
+
+#map{
+    width: 70%;
+    float: left;
+}
+
+#infoContainer{
+    width: 24%;
+    float: right;
+    margin-right: 60px;
+    text-align: center;
+}
+
+#masterContainer{
+    display: flexbox;
+    justify-content: center;
+}
