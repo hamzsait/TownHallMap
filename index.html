@@ -256,7 +256,7 @@
     
         <div id = "infoContainer">
             <h1>Upcoming Town Hall Events</h1>
-            <h2 class = "center" id = "stateNameLabel"></h2>
+            <h2 class = "center" id = "stateNameLabel"><span>&#8203;</span></h2>
             <div class = "datapoints">
 
                 <div class = "sideByside">
@@ -366,6 +366,8 @@
         svg.addEventListener("click", e => {
             if (e.target.style.fill === "rgb(3, 208, 255)") {
                 e.target.style.fill = "#ffd103da"
+
+                document.querySelector("#stateNameLabel").innerText = (e.target.id)
             }
             else{
                 clearAll()
