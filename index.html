@@ -4,7 +4,7 @@
         font-weight: 1000;
     }
     .displayBorder{
-        border: 1px solid black;
+        border: 1px solid white;
     }
     
     #map{
@@ -21,6 +21,7 @@
         float: right;
         text-align: center;
         color:white;
+        margin-bottom: 3%;
     }
 
     body{
@@ -44,6 +45,7 @@
 
     h4{
         font-size: 20px;
+        color:white;
     }
 
     .sideByside{
@@ -58,6 +60,16 @@
     #infoLink{
         font-size:20px;
         margin-top: 25px;
+    }
+
+    #eventsTable{
+        width: 100%;
+        margin-left: 20px;
+    }
+
+    table{
+        color:white;
+        text-align: center;
     }
 
     @media screen and (max-width: 1300px) {
@@ -322,7 +334,7 @@
                 </div>
                 
                 <div class = "sideByside">
-                    <h4> Time:</h4>
+                    <h4> Date and Time:</h4>
                     <h4 class = "info" id = "time"> N/A </h4>
                 </div>
                 
@@ -334,8 +346,24 @@
                 
             </div>
         </div>
-    
+        <table id = "eventsTable" class = "displayBorder">
+            <thead>
+                <tr>
+                    <th><h4> Name</h4></th>
+                    <th><h4> Party</h4></th>
+                    <th><h4> District</h4></th>
+                    <th><h4> Event Info</h4></th>
+                    <th><h4> Date and Time</h4></th>
+                    <th><h4> Location</h4></th>
+                </tr>
+            </thead>
+            <tbody id = "eventRows">
+
+            </tbody>
+        </table>
     </div>
+
+
     
 <script>
 
@@ -626,6 +654,59 @@ const states_avb = [
                 "AK"
             ]
 
+const states_obj = {
+	"MA": "Massachusetts",
+	"MN": "Minnesota",
+	"MT": "Montana",
+	"ND": "North Dakota",
+	"HI": "Hawaii",
+	"ID": "Idaho",
+	"WA": "Washington",
+	"AZ": "Arizona",
+	"CA": "California",
+	"CO": "Colorado",
+	"NV": "Nevada",
+	"NM": "New Mexico",
+	"OR": "Oregon",
+	"UT": "Utah",
+	"WY": "Wyoming",
+	"AR": "Arkansas",
+	"IA": "Iowa",
+	"KS": "Kansas",
+	"MO": "Missouri",
+	"NE": "Nebraska",
+	"OK": "Oklahoma",
+	"SD": "South Dakota",
+	"LA": "Louisiana",
+	"TX": "Texas",
+	"CT": "Connecticut",
+	"NH": "New Hampshire",
+	"RI": "Rhode Island",
+	"VT": "Vermont",
+	"AL": "Alabama",
+	"FL": "Florida",
+	"GA": "Georgia",
+	"MS": "Mississippi",
+	"SC": "South Carolina",
+	"IL": "Illinois",
+	"IN": "Indiana",
+	"KY": "Kentucky",
+	"NC": "North Carolina",
+	"OH": "Ohio",
+	"TN": "Tennessee",
+	"VA": "Virginia",
+	"WI": "Wisconsin",
+	"WV": "West Virginia",
+	"DE": "Delaware",
+	"DC": "District of Columbia",
+	"MD": "Maryland",
+	"NJ": "New Jersey",
+	"NY": "New York",
+	"PA": "Pennsylvania",
+	"ME": "Maine",
+	"MI": "Michigan",
+	"AK": "Alaska"
+}
 
 
     states = document.querySelectorAll("path")
@@ -640,6 +721,8 @@ const states_avb = [
         document.querySelector("#time").innerText = "N/A"
         document.querySelector("#location").innerText = "N/A"
         document.querySelector("#infoLink").innerText = ""
+
+
     
 
 
@@ -655,8 +738,8 @@ const states_avb = [
             if (e.target.style.fill === "rgb(3, 208, 255)") {
                 e.target.style.fill = "#ffd103da"
 
-                document.querySelector("#stateNameLabel").innerText = (e.target.id)
-
+                document.querySelector("#stateNameLabel").innerText = (states_obj[e.target.id])
+                fillEventTable(e.target.id)
                 recentevent = findMostRecent(e.target.id)
                 console.log(recentevent)
 
@@ -676,7 +759,7 @@ const states_avb = [
 
                 document.querySelector("#eventInfo").innerText = `${recentevent['EVENT INFO']}`
 
-                document.querySelector("#time").innerText = `${recentevent['TIME']}`
+                document.querySelector("#time").innerText = `${recentevent['EVENT DATE']} at ${recentevent['TIME']}`
 
                 if (recentevent['LOCATION'].includes('https')){
 
@@ -704,6 +787,62 @@ const states_avb = [
             }
         }
         
+    }
+
+    async function fillEventTable(id){
+
+        document.getElementById("eventRows").innerHTML = ''
+        for (event of events){
+            if (event.DISTRICT.slice(0,2) === id){
+                
+                row = document.createElement("tr")
+
+
+                naame = document.createElement("td")
+                naame.innerText = (`${event['FIRST NAME']} ${event['LAST NAME']}`)
+                row.appendChild(naame)
+
+                party = document.createElement("td")
+                if (event['D/R'] === "D"){
+                    party.innerText = (`Democrat`)
+                }
+                else if(event['D/R'] === "R"){
+                    party.innerText = (`Republican`)
+                }
+                else{
+                    party.innerText = (`Independent`)
+                }
+                row.appendChild(party)
+
+                district = document.createElement('td')
+                district.innerText = event['DISTRICT']
+                row.appendChild(district)
+
+                eventInfo = document.createElement('td')
+                eventInfo.innerText = `${event['EVENT INFO']}`
+                row.appendChild(eventInfo)
+
+                dateTime = document.createElement('td')
+                dateTime.innerText = `${event['EVENT DATE']} at ${event['TIME']}`
+                row.appendChild(dateTime)
+
+
+                if (event['LOCATION'].slice(0,5) === 'https'){
+                    link = document.createElement('a')
+                    link.href = event['LOCATION']
+                    link.innerText = "VIRTUAL EVENT"
+                    row.appendChild(link)
+                }
+                else{
+                    place = document.createElement('td')
+                    place.innerText = `${event['LOCATION']}`
+                    row.appendChild(place)
+                }
+                
+
+                document.querySelector("#eventRows").appendChild(row)
+            }
+        }
     }
 
 
